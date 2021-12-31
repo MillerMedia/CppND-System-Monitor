@@ -29,17 +29,9 @@ float Process::CpuUtilization() {
     float active_jiffies = LinuxParser::ActiveJiffies(pid_);
     float Hertz = sysconf(_SC_CLK_TCK);
     float seconds = LinuxParser::UpTime() - (starttime / Hertz);
-    cpu_usage = 100 * (active_jiffies / seconds);
-
-    /*std::cout << "Total time: " << total_time << std::endl;
-    std::cout << "Hertz: " << Hertz << std::endl;
-    std::cout << "Seconds: " << seconds << std::endl;
-    std::cout << "CPU Usage: " << cpu_usage << std::endl;*/
+    cpu_usage = active_jiffies / seconds;
 
     return cpu_usage;
-    
-
-    return 0;
 }
 
 // DONE: Return the command that generated this process
@@ -56,5 +48,5 @@ long int Process::UpTime() { return LinuxParser::UpTime(pid_); }
 
 // DONE: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-    return a.cpu_ < this->cpu_ ? true : false;
+    return a.cpu_ < this->cpu_;
 }

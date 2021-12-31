@@ -82,12 +82,12 @@ float LinuxParser::MemoryUtilization() {
   if(file){
     while(file >> token) {
         unsigned long mem;
-        if(token == "MemTotal:") {
+        if(token == filterMemTotalString) {
           if(file >> mem){
             memtotal = mem;
           }
         }
-        if(token == "MemFree:") {
+        if(token == filterMemFreeString) {
           if(file >> mem){
             memfree = mem;
           }
@@ -120,11 +120,10 @@ long LinuxParser::UpTime() {
   return uptime;
 }
 
-// TODO: Read and return the number of jiffies for the system
+// DONE: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return ActiveJiffies() + IdleJiffies(); }
 
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
+// DONE: Read and return the number of active jiffies for a PID
 long LinuxParser::ActiveJiffies(int pid) {
   string line, token;
   long utime, stime, cutime, cstime;
@@ -167,7 +166,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     return total_time / Hertz;
 }
 
-// TODO: Read and return the number of active jiffies for the system
+// DONE: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() {
   vector<string> CpuUtil = CpuUtilization();
   
@@ -177,7 +176,7 @@ long LinuxParser::ActiveJiffies() {
   return stol(CpuUtil[CPUStates::kUser_]) + stol(CpuUtil[CPUStates::kNice_]) + stol(CpuUtil[CPUStates::kSystem_]) + stol(CpuUtil[CPUStates::kIRQ_]) + stol(CpuUtil[CPUStates::kSoftIRQ_]) + stol(CpuUtil[CPUStates::kSteal_]);
 }
 
-// TODO: Read and return the number of idle jiffies for the system
+// DONE: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() {
   vector<string> CpuUtil = CpuUtilization();
   
@@ -198,7 +197,7 @@ vector<string> LinuxParser::CpuUtilization() {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
         while (linestream >> key) {
-          if (key == "cpu") {
+          if (key == filterCpu) {
             while (linestream >> value){
             	CpuUsage.emplace_back(value);
             }
@@ -221,7 +220,7 @@ int LinuxParser::TotalProcesses() {
   
   if(file){
     while(file >> token) {
-        if(token == "processes") {
+        if(token == filterProcesses) {
           if(file >> processes){
             return processes;
           }
@@ -240,7 +239,7 @@ int LinuxParser::RunningProcesses() {
   
   if(file){
     while(file >> token) {
-        if(token == "procs_running") {
+        if(token == filterRunningProcesses) {
           if(file >> procs_running){
             return procs_running;
           }
@@ -277,7 +276,7 @@ string LinuxParser::Ram(int pid) {
   
   if(file){
     while(file >> token) {
-      if(token == "VmSize:") {
+      if(token == filterProcMem) {
         if(file >> ram_kb){
           ram_mb = to_string(ram_kb*0.001);
 
@@ -300,7 +299,7 @@ string LinuxParser::Uid(int pid) {
   
   if(file){
     while(file >> token) {
-      if(token == "Uid:") {
+      if(token == filterUID) {
         if(file >> uid){
           return uid;
         }
