@@ -29,7 +29,7 @@ vector<Process>& System::Processes() {
     for(int pid : pids) {
         Process process(pid);
       
-      	if(!process.Command().empty() && !process.Ram().empty()){
+      	if(!process.Command().empty() || !process.Ram().empty()){
         	processes_.emplace_back(process);
         }
     }
